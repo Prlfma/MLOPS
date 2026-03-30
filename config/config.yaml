@@ -1,0 +1,35 @@
+seed: 42
+
+mlflow:
+  tracking_uri: "sqlite:///mlflow.db" 
+  experiment_name: "Music_Popularity_HPO"
+  log_model: true
+  register_model: false
+  model_name: "BestMusicRFModel"
+  stage: "Staging"
+
+data:
+  train_path: "data/prepared/train.csv"
+  test_path: "data/prepared/test.csv"
+  target_column: "popularity"
+
+model:
+  type: "random_forest_regressor"
+
+hpo:
+  n_trials: 20
+  sampler: "tpe"
+  metric: "rmse"
+  direction: "minimize" 
+  use_cv: true
+  cv_folds: 3
+  
+  random_forest_regressor:
+    n_estimators: { low: 50, high: 150 }
+    max_depth: { low: 3, high: 20 }
+    min_samples_split: { low: 2, high: 10 }
+
+hydra:
+  run:
+    dir: .
+  output_subdir: null
