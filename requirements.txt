@@ -9,3 +9,4 @@ hydra-core
 optuna
 joblib
 pytest
+dvc

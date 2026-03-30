@@ -29,8 +29,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # Запускаємо DVC пайплайн. 
-      # Оскільки дані в Git, він швидко зробить prepare та train
       - name: Run DVC pipeline (Prepare & Train)
         run: |
           dvc repro
@@ -40,7 +38,8 @@ jobs:
           RMSE_THRESHOLD: "16.5"
         run: |
           pytest -v
-
+      - name: Setup CML
+        uses: iterative/setup-cml@v2
       - name: Create CML report
         if: github.event_name == 'pull_request' || github.event_name == 'push'
         env:
