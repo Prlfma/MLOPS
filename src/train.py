@@ -11,7 +11,7 @@ from sklearn.metrics import mean_squared_error, r2_score
 
 def main():
     parser = argparse.ArgumentParser(description="Train a Music Popularity Prediction model.")
-    parser.add_argument("--n_estimators", type=int, default=100, help="Number of trees in the forest")
+    parser.add_argument("--n_estimators", type=int, default=101, help="Number of trees in the forest")
     parser.add_argument("--max_depth", type=int, default=10, help="Maximum depth of the tree")
     parser.add_argument("--min_samples_split", type=int, default=2, help="Min samples to split a node")
     parser.add_argument("--data_path", type=str, default="data/prepared/", help="Path to the train dataset")

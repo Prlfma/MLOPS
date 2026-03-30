@@ -31,12 +31,12 @@ stages:
       nfiles: 2
     - path: src/train.py
       hash: md5
-      md5: be54812ec7feee221045abde1dc5c7d5
+      md5: 7feda5243b2b5bb30bc0fa850c29c1db
       size: 2859
       isexec: true
     outs:
     - path: data/models
       hash: md5
-      md5: 65d1e2fcbaafe761a2023f0e04bf6f8e.dir
-      size: 5656623
+      md5: 1ec470b74c7c2f61941e50ec09a47173.dir
+      size: 5715252
       nfiles: 1
