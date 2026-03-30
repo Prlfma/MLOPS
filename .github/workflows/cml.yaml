@@ -1,4 +1,4 @@
-name: Model CI (Train, Test, Report)
+name: MLOps CI Pipeline
 
 on:
   push:
@@ -6,12 +6,8 @@ on:
   pull_request:
     branches: [ "main", "master" ]
 
-permissions:
-  contents: write
-  pull-requests: write
-
 jobs:
-  ci:
+  ci-pipeline:
     runs-on: ubuntu-latest
 
     steps:
@@ -28,13 +24,27 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          # Додатково встановлюємо airflow для проходження тесту DAG
+          pip install apache-airflow pytest
+
       - name: Lint (flake8)
         run: |
-          flake8 src/ tests/ --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 src/ tests/ dags/ --count --select=E9,F63,F7,F82 --show-source --statistics
 
       - name: Format check (black)
         run: |
-          black --check src/ tests/
+          black --check src/ tests/ dags/
+
+      - name: Run DAG Integrity Test
+        env:
+          AIRFLOW_HOME: ${{ github.workspace }}/airflow
+        run: |
+          pytest tests/test_dag.py -v
+
+      - name: Test Docker Build
+        run: |
+          docker build -t ml-project:test .
+
       - name: Run DVC pipeline (Prepare & Train)
         run: |
           dvc repro
@@ -44,8 +54,10 @@ jobs:
           RMSE_THRESHOLD: "16.5"
         run: |
           pytest -v
+
       - name: Setup CML
         uses: iterative/setup-cml@v2
+
       - name: Create CML report
         if: github.event_name == 'pull_request' || github.event_name == 'push'
         env:
@@ -58,8 +70,5 @@ jobs:
           echo "## 📈 Feature Importance" >> report.md
           cml publish feature_importance.png --md >> report.md
           echo "" >> report.md
-          
-          echo "## 🛡️ Quality Gate" >> report.md
-          echo "RMSE threshold: $RMSE_THRESHOLD" >> report.md
           
           cml comment create report.md
