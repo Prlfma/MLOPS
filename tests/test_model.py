@@ -12,7 +12,7 @@ def test_data_schema_basic():
 
 def test_artifacts_exist():
     """Post-train тест: перевірка наявності згенерованих файлів."""
-    assert os.path.exists("models/random_forest_model.pkl"), "Model artifact not found"
+    assert os.path.exists("data/models/random_forest_model.pkl"), "Model artifact not found"
     assert os.path.exists("metrics.json"), "metrics.json not found"
     assert os.path.exists("feature_importance.png"), "feature_importance.png not found"
 
