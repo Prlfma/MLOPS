@@ -8,14 +8,15 @@ import mlflow.sklearn
 import os
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, r2_score
+import json
 
 def main():
     parser = argparse.ArgumentParser(description="Train a Music Popularity Prediction model.")
-    parser.add_argument("--n_estimators", type=int, default=101, help="Number of trees in the forest")
-    parser.add_argument("--max_depth", type=int, default=10, help="Maximum depth of the tree")
-    parser.add_argument("--min_samples_split", type=int, default=2, help="Min samples to split a node")
+    parser.add_argument("--n_estimators", type=int, default=145, help="Number of trees")
+    parser.add_argument("--max_depth", type=int, default=20, help="Maximum depth")
+    parser.add_argument("--min_samples_split", type=int, default=9, help="Min samples split")
     parser.add_argument("--data_path", type=str, default="data/prepared/", help="Path to the train dataset")
-    parser.add_argument("--model_path", type=str, default="models/", help="Path to the train dataset")
+    parser.add_argument("--model_path", type=str, default="models/", help="Path to save model")
     args = parser.parse_args()
 
     df_train = pd.read_csv(args.data_path + "train.csv")
@@ -67,7 +68,10 @@ def main():
         os.makedirs(args.model_path, exist_ok=True)
         filename = args.model_path + "random_forest_model.pkl"
         with open(filename, 'wb') as file:
-            pickle.dump(model, file)           
+            pickle.dump(model, file)          
+        metrics = {"rmse": rmse, "r2": r2}
+        with open("metrics.json", "w", encoding="utf-8") as f:
+            json.dump(metrics, f, indent=2) 
         print(f"✅ Run complete! RMSE: {rmse:.4f}, R2: {r2:.4f}")
 
 if __name__ == "__main__":

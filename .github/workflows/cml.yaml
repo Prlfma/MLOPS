@@ -1,0 +1,60 @@
+name: Model CI (Train, Test, Report)
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # Запускаємо DVC пайплайн. 
+      # Оскільки дані в Git, він швидко зробить prepare та train
+      - name: Run DVC pipeline (Prepare & Train)
+        run: |
+          dvc repro
+
+      - name: Run Quality Gate Tests
+        env:
+          RMSE_THRESHOLD: "16.5"
+        run: |
+          pytest -v
+
+      - name: Create CML report
+        if: github.event_name == 'pull_request' || github.event_name == 'push'
+        env:
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "## 📊 Model Metrics" > report.md
+          cat metrics.json >> report.md
+          echo "" >> report.md
+          
+          echo "## 📈 Feature Importance" >> report.md
+          cml publish feature_importance.png --md >> report.md
+          echo "" >> report.md
+          
+          echo "## 🛡️ Quality Gate" >> report.md
+          echo "RMSE threshold: $RMSE_THRESHOLD" >> report.md
+          
+          cml comment create report.md

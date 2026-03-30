@@ -2,8 +2,12 @@ __pycache__
 *.py[cod]
 venv
 .env
-data
+data/prepared
 models
 .ipynb_checkpoints
 mlruns
 .trash
+
+metrics.json
+feature_importance.png
+report.md
