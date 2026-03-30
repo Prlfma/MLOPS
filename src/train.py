@@ -39,7 +39,7 @@ def main():
     X_test = df_test.drop("popularity", axis=1)
     y_test = df_test["popularity"]
 
-    mlflow.set_experiment("Music_Popularity_Prediction")
+    mlflow.set_experiment("CI_Music_Popularity")
 
     with mlflow.start_run():
         mlflow.set_tag("developer", "Kordan_Pavlo")
