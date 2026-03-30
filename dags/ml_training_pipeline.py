@@ -55,7 +55,7 @@ default_args = {
 with DAG(
     "ml_training_pipeline",
     default_args=default_args,
-    schedule_interval=None,
+    schedule=None,
     catchup=False,
 ) as dag:
     check_data = BashOperator(
