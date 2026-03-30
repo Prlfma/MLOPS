@@ -6,10 +6,11 @@ on:
   pull_request:
     branches: [ "main", "master" ]
 
-# ДОДАНО: Дозволи на запис для створення коментарів CML
+# Надаємо всі необхідні права для створення коментарів
 permissions:
   contents: write
   pull-requests: write
+  issues: write
 
 jobs:
   ci-pipeline:
@@ -66,7 +67,6 @@ jobs:
           echo "" >> report.md
           
           echo "## 📈 Feature Importance" >> report.md
-          # ВИПРАВЛЕНО: Використовуємо новий синтаксис замість застарілого cml publish
-          echo "![](./feature_importance.png)" >> report.md
+          echo "![Feature Importance](./feature_importance.png)" >> report.md
           
           cml comment create report.md
