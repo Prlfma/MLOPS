@@ -10,3 +10,5 @@ optuna
 joblib
 pytest
 dvc
+flake8
+black<24.0.0
