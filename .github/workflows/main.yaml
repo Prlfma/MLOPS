@@ -6,7 +6,6 @@ on:
   pull_request:
     branches: [ "main", "master" ]
 
-# Надаємо всі необхідні права для створення коментарів
 permissions:
   contents: write
   pull-requests: write
